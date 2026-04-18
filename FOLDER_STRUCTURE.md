@@ -2,32 +2,7 @@
 
 Complete folder structure and setup guide for the multi-module Alpha Spy.
 
-## ðŸ“ Directory Structure
-
-```
-AlphaSpy/
-â”œâ”€â”€ Main.lua                 # Entry point - load this file
-â”œâ”€â”€ FOLDER_STRUCTURE.md      # This documentation
-â”‚
-â”œâ”€â”€ lib/                     # Core modules
-â”‚   â”œâ”€â”€ Files.lua           # File management & module loading
-â”‚   â”œâ”€â”€ Flags.lua           # Feature flags & settings
-â”‚   â”œâ”€â”€ Communication.lua   # Inter-module communication
-â”‚   â”œâ”€â”€ Process.lua         # Remote processing & detection
-â”‚   â”œâ”€â”€ Hook.lua            # Hooking system (__namecall, __index)
-â”‚   â”œâ”€â”€ Generation.lua      # Code generation
-â”‚   â”œâ”€â”€ Ui.lua              # User interface
-â”‚   â””â”€â”€ Debug.lua           # Debug tools for bypass development
-â”‚
-â”œâ”€â”€ templates/               # User configuration templates
-â”‚   â”œâ”€â”€ Config.lua          # Main configuration
-â”‚   â””â”€â”€ Return Spoofs.lua   # Return value spoofing
-â”‚
-â””â”€â”€ assets/                  # Assets (fonts, images)
-    â””â”€â”€ (empty - for custom fonts)
-```
-
-## ðŸš€ Installation
+## Installation
 
 ### Method 1: Direct Load (GitHub Raw)
 
@@ -63,7 +38,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_RE
 2. Set `UseWorkspace = true` in Config.lua
 3. Update folder path in Main.lua
 
-## ðŸ“‹ Module Descriptions
+## Module Descriptions
 
 ### Core Modules
 
@@ -78,7 +53,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_RE
 | **Ui.lua** | User interface with ReGui | `CreateMainWindow()`, `CreateLog()`, `ConsoleLog()` |
 | **Debug.lua** | **Bypass development tools** | `InterceptCall()`, `RegisterModifier()`, `GetStats()` |
 
-## ðŸ› ï¸ Debug Features (Debug Mode)
+## Debug Features (Debug Mode)
 
 When `DebugMode = true`, you get access to:
 
@@ -122,7 +97,7 @@ end)
 local Script = Debug:GenerateBypassScript(Remote, "FireServer", "block")
 ```
 
-## âš™ï¸ Configuration Options
+## Configuration Options
 
 ### Main Config (templates/Config.lua)
 
@@ -158,7 +133,7 @@ return {
 }
 ```
 
-## ðŸŽ® Usage Guide
+## Usage Guide
 
 ### Basic Usage
 1. Load the script
@@ -182,7 +157,7 @@ return {
 4. Copy the generated script
 5. Modify as needed
 
-## ðŸ”§ Troubleshooting
+## Troubleshooting
 
 ### "Module not found" errors
 - Check that `RepoUrl` is correct
@@ -204,7 +179,7 @@ return {
 - Check Debug module loaded successfully
 - Verify `Flags.lua` has debug flags
 
-## ðŸ“¦ Dependencies
+## ¦ Dependencies
 
 ### Required (Executor Functions)
 - `hookmetamethod` or `getrawmetatable` + `setreadonly`
@@ -224,7 +199,7 @@ return {
 - `getconnections` - Connection inspection
 - `firesignal` - Fire client events
 
-## ðŸ“ Notes
+## Notes
 
 - The Debug module is **only loaded when DebugMode = true**
 - All modules are loaded dynamically via HTTP
@@ -232,7 +207,7 @@ return {
 - Call history is limited to 1000 entries
 - Log queue processes every frame
 
-## ðŸ”— Related Files
+## Related Files
 
 - **Roblox-parser**: For advanced code generation (optional)
 - **ReGui**: UI framework (included in lib/)
