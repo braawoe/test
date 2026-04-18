@@ -137,6 +137,18 @@ function Hook:PatchFunctions()
             local IsC = iscclosure(Func)
             
             --// Patch c-closure error detection
+function Hook:PatchFunctions()
+    --// Check if disabled
+    if Config and Config.NoFunctionPatching then return end
+    
+    local Patches = {
+        --// Error detection patch
+        [pcall] = function(OldFunc, Func, ...)
+            local Response = {OldFunc(Func, ...)}
+            local Success, Error = Response[1], Response[2]
+            local IsC = iscclosure(Func)
+            
+            --// Patch c-closure error detection
             if Success == false and IsC then
                 local NewError = Process:CleanCError(Error)
                 Response[2] = NewError
@@ -150,4 +162,57 @@ function Hook:PatchFunctions()
                 
                 if Count == 196 then
                     Communication:ConsolePrint(`C stack overflow patched, count: {Count}`)
-                    Response[2] = Error:gsub(`{Caller}:{Line}: `
+                    Response[2] = Error:gsub(`{Caller}:{Line}: `, "", 196)
+                end
+            end
+            
+            return Process:Unpack(Response)
+        end
+    }
+    
+    --// Apply patches
+    for Func, Patch in pairs(Patches) do
+        self:HookFunction(Func, Patch)
+    end
+end
+
+function Hook:BeginHooks()
+    self:PatchFunctions()
+    
+    --// Hook __namecall
+    self.OriginalNamecall = self:HookMetaMethod(game, "__namecall", function(...)
+        return self:NamecallHook(...)
+    end)
+    
+    --// Hook __index
+    self.OriginalIndex = self:HookMetaMethod(game, "__index", function(...)
+        return self:IndexHook(...)
+    end)
+end
+
+function Hook:GetOriginalFunc(Func)
+    return self.PreviousFunctions[Func] or Func
+end
+
+function Hook:NamecallHook(...)
+    -- Placeholder for namecall hooking logic
+    local Method = getnamecallmethod()
+    return self.OriginalNamecall(...)
+end
+
+function Hook:IndexHook(...)
+    -- Placeholder for index hooking logic
+    return self.OriginalIndex(...)
+end
+
+function Hook:LoadHooks(ActorCode, ChannelId)
+    -- Initialize hooking system
+    self:BeginHooks()
+    
+    if ActorCode then
+        -- Load actor-based hooks if needed
+        print("[Hook] Actor code loaded")
+    end
+end
+
+return Hook
