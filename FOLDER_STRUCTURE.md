@@ -3,42 +3,19 @@
 Complete folder structure and setup guide for the multi-module Alpha Spy.
 
 ## Installation
-
-### Method 1: Direct Load (GitHub Raw)
-
-1. Upload all files to your GitHub repository
-2. Get the raw URL for `Main.lua`
-3. Update the `RepoUrl` in Main.lua:
-
-```lua
-local Configuration = {
-    RepoUrl = "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/AlphaSpy",
-    ParserUrl = "https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/Roblox-parser/dist/Main.luau",
-    DebugMode = false, -- Set to true for bypass tools
-}
-```
-
 4. Load in Roblox:
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/AlphaSpy/Main.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/trident-bit/test/main/Main.lua"))()
 ```
 
 ### Method 2: With Debug Mode
 
 ```lua
-loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/AlphaSpy/Main.lua"))({
+loadstring(game:HttpGet("https://raw.githubusercontent.com/trident-bit/test/main/Main.lua"))({
     DebugMode = true,  -- Enable debug/bypass tools
     NoActors = false,  -- Use actor hooks (if supported)
 })
 ```
-
-### Method 3: Workspace Mode (Offline)
-
-1. Download all files to your executor's workspace
-2. Set `UseWorkspace = true` in Config.lua
-3. Update folder path in Main.lua
-
-## Module Descriptions
 
 ### Core Modules
 
