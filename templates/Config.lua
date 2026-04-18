@@ -59,3 +59,4 @@ return {
         BaseTheme = "ImGui",
         TextSize = 12
     }
+}
