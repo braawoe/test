@@ -1,5 +1,4 @@
 return {
-    --// Hooking Configuration
     ForceUseCustomComm = false,
     ReplaceMetaCallFunc = false,
     NoReceiveHooking = false,
@@ -18,7 +17,7 @@ return {
         "Arg_%.d",
         "Remote_%.d",
         "Data_%.d",
-        "Value_%.d"  -- ← No comma here
+        "Value_%.d"
     },
     
     SyntaxColors = {
@@ -52,7 +51,7 @@ return {
         ["event"] = Color3.fromRGB(77, 245, 181),
         ["invoke"] = Color3.fromRGB(245, 77, 77),
         ["oninvoke"] = Color3.fromRGB(245, 77, 209),
-        ["fire"] = Color3.fromRGB(245, 141, 77)  -- ← No comma here
+        ["fire"] = Color3.fromRGB(245, 141, 77)
     },
     
     ThemeConfig = {
