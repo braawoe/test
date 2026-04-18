@@ -137,18 +137,6 @@ function Hook:PatchFunctions()
             local IsC = iscclosure(Func)
             
             --// Patch c-closure error detection
-function Hook:PatchFunctions()
-    --// Check if disabled
-    if Config and Config.NoFunctionPatching then return end
-    
-    local Patches = {
-        --// Error detection patch
-        [pcall] = function(OldFunc, Func, ...)
-            local Response = {OldFunc(Func, ...)}
-            local Success, Error = Response[1], Response[2]
-            local IsC = iscclosure(Func)
-            
-            --// Patch c-closure error detection
             if Success == false and IsC then
                 local NewError = Process:CleanCError(Error)
                 Response[2] = NewError
