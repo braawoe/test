@@ -8,7 +8,7 @@ local Configuration = {
     UseWorkspace = false,
     NoActors = false,
     FolderName = "Alpha Spy",
-    RepoUrl = "", -- Set your raw GitHub URL here
+    RepoUrl = "https://raw.githubusercontent.com/trident-bit/Alpha-spy/refs/heads/main/Main.lua?token=GHSAT0AAAAAADZUUCDRACTDDRLKZ3RKAE4C2PC66YA", -- Set your raw GitHub URL here
     ParserUrl = "", -- Set your Roblox-parser URL here
     Directory = "Alpha Spy",
     DebugMode = false, -- Set to true to enable debug/bypass features
