@@ -1,6 +1,6 @@
 --[[
-    Alpha Spy A revamped version of Sigma Spy with advanced debugging capabilities
-    Author: ashkoi
+    Alpha Spy SKIDDER 😡😡
+    Author: trident
 --]]
 
 --// Base Configuration
@@ -8,10 +8,10 @@ local Configuration = {
     UseWorkspace = false,
     NoActors = false,
     FolderName = "Alpha Spy",
-    RepoUrl = "https://raw.githubusercontent.com/trident-bit/Alpha-spy/refs/heads/main/Main.lua?token=GHSAT0AAAAAADZUUCDRACTDDRLKZ3RKAE4C2PC66YA", -- Set your raw GitHub URL here
-    ParserUrl = "", -- Set your Roblox-parser URL here
+    RepoUrl = "",
+    ParserUrl = "",
     Directory = "Alpha Spy",
-    DebugMode = false, -- Set to true to enable debug/bypass features
+    DebugMode = false,
 }
 
 --// Load overwrites from parameters
@@ -156,5 +156,4 @@ end
 
 print("Alpha Spy Loaded Successfully!")
 
---// Return modules for external access
 return Modules
