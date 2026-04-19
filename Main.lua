@@ -52,6 +52,10 @@ local Scripts = {
 
 local Players: Players = Services.Players
 local Modules = Files:LoadLibraries(Scripts)
+if typeof(Modules.Config) == "string" then
+    Modules.Config = loadstring(Modules.Config)()
+end
+
 local Process = Modules.Process
 local Hook = Modules.Hook
 local Ui = Modules.Ui
