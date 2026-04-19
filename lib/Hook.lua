@@ -183,24 +183,61 @@ function Hook:GetOriginalFunc(Func)
 end
 
 function Hook:NamecallHook(...)
-    -- Placeholder for namecall hooking logic
     local Method = getnamecallmethod()
+    local Remote = ...
+    
+    -- Check if this is a remote we should log
+    if Process:RemoteAllowed(Remote, "Send", Method) then
+        local Args = {...}
+        table.remove(Args, 1) -- Remove 'self' argument
+        
+        local Data = {
+            Method = Method,
+            MetaMethod = "__namecall",
+            TransferType = "Send",
+            OriginalFunc = self.OriginalNamecall
+        }
+        
+        local Result = Process:ProcessRemote(Data, Remote, select(2, ...))
+        if Result then
+            return Process:Unpack(Result)
+        end
+    end
+    
     return self.OriginalNamecall(...)
 end
 
-function Hook:IndexHook(...)
-    -- Placeholder for index hooking logic
-    return self.OriginalIndex(...)
-end
-
-function Hook:LoadHooks(ActorCode, ChannelId)
-    -- Initialize hooking system
-    self:BeginHooks()
-    
-    if ActorCode then
-        -- Load actor-based hooks if needed
-        print("[Hook] Actor code loaded")
+function Hook:IndexHook(Object, Property)
+    -- Check if accessing a remote's receive property
+    if Process:RemoteAllowed(Object, "Receive", Property) then
+        local Original = self.OriginalIndex(Object, Property)
+        
+        -- Hook the receive event/callback
+        if typeof(Original) == "RBXScriptSignal" then
+            return newproxy(true, {
+                __index = function(_, Index)
+                    if Index == "Connect" or Index == "connect" then
+                        return function(_, Callback)
+                            return Original:Connect(function(...)
+                                -- Log the received data
+                                local Data = {
+                                    Method = Property,
+                                    MetaMethod = "__index",
+                                    TransferType = "Receive",
+                                    IsReceive = true
+                                }
+                                Process:ProcessRemote(Data, Object, ...)
+                                
+                                -- Call original callback
+                                return Callback(...)
+                            end)
+                        end
+                    end
+                    return Original[Index]
+                end
+            })
+        end
     end
+    
+    return self.OriginalIndex(Object, Property)
 end
-
-return Hook
