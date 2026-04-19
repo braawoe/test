@@ -216,7 +216,7 @@ function Generation:SimpleParser()
                     local Value = self:Format(v)
                     table.insert(Parts, `[{Key}] = {Value}`)
                 end
-                return `{{table.concat(Parts, ", ")}}`
+                return `{table.concat(Parts, ", ")}`
             end
         },
         
