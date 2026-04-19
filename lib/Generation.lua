@@ -297,7 +297,7 @@ function Generation:CallRemoteScript(Data, Info: CallInfo): string
     --// Create table variable if not array
     if not IsArray or NoVariables then
         ParsedArgs = Variables:MakeVariable({
-            Value = (`{%s}`):format(ParsedArgs),
+            Value = ("{%s}"):format(ParsedArgs),
             Comment = not IsArray and "Arguments aren't ordered" or nil,
             Name = "RemoteArgs",
             Class = "Remote"
