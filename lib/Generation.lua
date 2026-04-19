@@ -336,7 +336,7 @@ function Generation:SimpleFormat(Value)
         for k, v in pairs(Value) do
             table.insert(Parts, `[{self:SimpleFormat(k)}] = {self:SimpleFormat(v)}`)
         end
-        return `{${table.concat(Parts, ", ")}}`
+        return `{table.concat(Parts, ", ")}`
     else
         return tostring(Value)
     end
