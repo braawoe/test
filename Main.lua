@@ -87,6 +87,11 @@ Process:Init({
     Services = Services
 })
 
+Communication:Init({
+    Modules = Modules,
+    Services = Services
+})
+
 Hook:Init({
     Modules = Modules,
     Services = Services
