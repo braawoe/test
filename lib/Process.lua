@@ -152,7 +152,9 @@ end
 
 function Process:CheckValue(Value, Ignore: table?, Cache: table?)
     local Type = typeof(Value)
-    Communication:WaitCheck()
+    if Communication then
+        Communication:WaitCheck()
+    end
     
     if Type == "table" then
         Value = self:DeepCloneTable(Value, Ignore, Cache)
