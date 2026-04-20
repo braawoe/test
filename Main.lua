@@ -98,8 +98,8 @@ Process:Init({
 })
 
 Modules.Debug:Init({
-    Modules = Modules
-    Services = services
+    Modules = Modules,
+    Services = Services
 })
 
 Hook:Init({
