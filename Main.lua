@@ -84,6 +84,12 @@ Ui:CreateMainWindow()
 Ui:CreateWindowContent()
 
 local Communication = Modules.Communication
+
+Communication:Init({
+    Modules = Modules,
+    Services = Services
+})
+
 local ChannelId, Channel = Communication:CreateChannel()
 
 Process:Init({
@@ -91,9 +97,9 @@ Process:Init({
     Services = Services
 })
 
-Communication:Init({
-    Modules = Modules,
-    Services = Services
+Modules.Debug:Init({
+    Modules = Modules
+    Services = services
 })
 
 Hook:Init({
