@@ -241,3 +241,42 @@ function Hook:IndexHook(Object, Property)
     
     return self.OriginalIndex(Object, Property)
 end
+
+function Hook:LoadHooks(ActorCode: string, ChannelId: number)
+    if run_on_actor then
+        run_on_actor(ActorCode)
+    else
+        local Closure, Error = loadstring(ActorCode, "AlphaSpyActor")
+        if Closure then
+            Closure()
+        else
+            warn("[Alpha Spy] Failed to compile actor code:", Error)
+        end
+    end
+end
+
+function Hook:BeginService(Libraries, ExtraData, Args)
+    local ChannelId = Args[1]
+    
+    Modules = Libraries
+    Process = Libraries.Process
+    Communication = Libraries.Communication or Communication
+    Config = Libraries.Config or Config
+    
+    if Process and Process.Init then
+        Process:Init({
+            Modules = Libraries,
+            Services = {}
+        })
+    end
+    
+    if Communication and ChannelId then
+        Communication:SetChannel(ChannelId)
+    end
+    
+    self:BeginHooks()
+    
+    print("[Alpha Spy] Actor hooks started on channel", ChannelId)
+end
+
+return Hook
