@@ -211,7 +211,7 @@ function Module:ConsolePrint(...)
 end
 
 function Module:QueueLog(Data)
-    spawn(function()
+    task.spawn(function()
         local SerializedArgs = self:SerializeTable(Data.Args)
         Data.Args = SerializedArgs
         self:Communicate("QueueLog", Data)
