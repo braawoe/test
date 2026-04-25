@@ -51,7 +51,7 @@ local Process = {
     
     --// Executor-specific config overwrites
     ConfigOverwrites = {
-        [{"sirhurt", "potassium", "wave"}] = {
+        [{"codex", "potassium", "wave"}] = {
             ForceUseCustomComm = true
         }
     }
