@@ -55,11 +55,9 @@ function CommWrapper:ProcessQueue()
 end
 
 function CommWrapper:BeginQueueService()
-    coroutine.wrap(function()
-        while wait() do
-            self:ProcessQueue()
-        end
-    end)()
+    task.spawn(function()
+     while task.wait() do self:ProcessQueue() end
+        end)
 end
 
 function Module:NewCommWrap(Channel: BindableEvent)
