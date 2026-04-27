@@ -101,11 +101,6 @@ Process:Init({
     Services = Services
 })
 
-Modules.Debug:Init({
-    Modules = Modules,
-    Services = Services
-})
-
 Hook:Init({
     Modules = Modules,
     Services = Services
