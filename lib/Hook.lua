@@ -243,17 +243,26 @@ function Hook:IndexHook(Object, Property)
 end
 
 function Hook:LoadHooks(ActorCode: string, ChannelId: number)
-    if run_on_actor then
-        run_on_actor(ActorCode)
-    else
-        local Closure, Error = loadstring(ActorCode, "AlphaSpyActor")
-        if Closure then
-            Closure()
-        else
-            warn("[Alpha Spy] Failed to compile actor code:", Error)
-        end
+    if typeof(run_on_actor) == "function" then
+        local success, err = pcall(function()
+            run_on_actor(ActorCode)
+        end)
+        if success then return end
+        warn("[Alpha Spy] run_on_actor failed:", err)
+    end
+    
+    local Closure, CompileErr = loadstring(ActorCode, "AlphaSpyActor")
+    if not Closure then
+        warn("[Alpha Spy] Actor code failed to compile:", CompileErr)
+        return
+    end
+    
+    local success, runErr = pcall(Closure)
+    if not success then
+        warn("[Alpha Spy] Actor runtime error:", runErr)
     end
 end
+
 
 function Hook:BeginService(Libraries, ExtraData, Args)
     local ChannelId = Args[1]
