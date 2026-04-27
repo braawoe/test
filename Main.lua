@@ -56,6 +56,10 @@ if typeof(Modules.Config) == "string" then
     Modules.Config = loadstring(Modules.Config)()
 end
 
+if typeof(Modules.ReturnSpoofs) == "string" then
+    Modules.ReturnSpoofs = loadstring(Modules.ReturnSpoofs)()
+end
+
 local Process = Modules.Process
 local Hook = Modules.Hook
 local Ui = Modules.Ui
