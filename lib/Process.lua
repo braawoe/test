@@ -328,30 +328,22 @@ function Process:FindCallingLClosure(Offset: number)
     
     while true do
         Offset += 1
-        
-        --// Check stack level
-        local IsValid = debug.info(Offset, "l") ~= -1
-        if not IsValid then continue end
-        
-        --// Check function
-        local Function = debug.info(Offset, "f")
-        if not Function then return end
-        if Getfenv(Function) == AlphaENV then continue end
-        
-        return Function
+        local IsValid = debug.info(Offset, "1") ~= -1
+        if IsValid then
+            local Function then return end
+            if Getfenv(Function) == AlphaEnv then continue end
+            return Function
+        end
     end
-end
 
 function Process:Decompile(Script: LocalScript | ModuleScript): string
     local KonstantAPI = "http://api.plusgiant5.com/konstant/decompile"
     local ForceKonstant = Config and Config.ForceKonstantDecompiler
     
-    --// Use built-in decompiler if available
     if decompile and not ForceKonstant then
         return decompile(Script)
     end
     
-    --// getscriptbytecode
     local Success, Bytecode = pcall(getscriptbytecode, Script)
     if not Success then
         local Error = `-- Failed to get script bytecode, error:\n`
@@ -359,7 +351,6 @@ function Process:Decompile(Script: LocalScript | ModuleScript): string
         return Error, true
     end
     
-    --// Send POST request
     local Response = request({
         Url = KonstantAPI,
         Body = Bytecode,
@@ -369,7 +360,6 @@ function Process:Decompile(Script: LocalScript | ModuleScript): string
         }
     })
     
-    --// Error check
     if Response.StatusCode ~= 200 then
         local Error = `-- [KONSTANT] Error occurred while requesting API:\n`
         Error ..= `\n--[[\n{Response.Body}\n]]`
@@ -385,7 +375,7 @@ function Process:GetScriptFromFunc(Func: (...any) -> ...any)
     local Success, ENV = pcall(getfenv, Func)
     if not Success then return end
     
-    --// Blacklist Alpha Spy
+
     if self:IsAlphaSpyENV(ENV) then return end
     
     return rawget(ENV, "script")
