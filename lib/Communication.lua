@@ -1,4 +1,4 @@
-endtable = {
+table = {
     [any]: any
 }
 
@@ -102,12 +102,11 @@ function Module:CreateCommChannel(): (number, BindableEvent)
     
     if type(create_comm_channel) == "function" and not Force then
      local success, result = pcall(create_comm_channel)
-     if success then return reselt end
+     if success then return result end
     end
     
     local Parent = self:GetHiddenParent()
     local ChannelId = math.random(1, 10000000)
-        )
     local Channel = Instance.new("BindableEvent", Parent)
     Channel.Name = tostring(ChannelId)
     
