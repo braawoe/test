@@ -132,8 +132,7 @@ function Files:CheckPath(Parent: string, Child: string)
 end
 
 function Files:CheckFolders(Structure: table, Path: string?)
-    for ParentName, Name in next, Structure do
-        --// Check parent folder
+    for ParentName, Name in next, Structure do 
         if typeof(Name) == "table" then
             local NewPath = self:CheckPath(Path, ParentName)
             self:FolderCheck(NewPath)
@@ -154,17 +153,13 @@ function Files:GetAsset(Name: string, CustomAsset: boolean?): string
 end
 
 function Files:GetModule(Name: string, TemplateName: string): string
-    local Path = `{Name}.lua`
+    local Path = self:MakePath(`{Name}.lua`)
     
-    --// File will be created from template if needed
     if TemplateName then
         self:TemplateCheck(Path, TemplateName)
-        
-        --// Check if it loaded successfully
         local Content = readfile(Path)
         local Success = loadstring(Content)
         if Success then return Content end
-        
         return self:GetTemplate(TemplateName)
     end
     
