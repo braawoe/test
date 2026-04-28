@@ -1,4 +1,4 @@
-table = {
+type table = {
     [any]: any
 }
 
