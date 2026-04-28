@@ -272,13 +272,6 @@ function Hook:BeginService(Libraries, ExtraData, Args)
     Communication = Libraries.Communication or Communication
     Config = Libraries.Config or Config
     
-    if Process and Process.Init then
-        Process:Init({
-            Modules = Libraries,
-            Services = {}
-        })
-    end
-    
     if Communication and ChannelId then
         Communication:SetChannel(ChannelId)
     end
