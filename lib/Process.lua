@@ -1,4 +1,4 @@
-type table = {
+end table = {
     [any]: any
 }
 
@@ -326,16 +326,21 @@ end
 function Process:FindCallingLClosure(Offset: number)
     local Getfenv = Hook:GetOriginalFunc(getfenv)
     Offset += 1
+    local MaxDepth = 200
     
-    while true do
+    while Offset < MaxDepth do
         Offset += 1
-        local IsValid = debug.info(Offset, "1") ~= -1
+        local IsValid = debug.info(Offset, "l") ~= -1
         if IsValid then
-            local Function then return end
-            if Getfenv(Function) == AlphaEnv then continue end
-            return Function
+            local Function = debug.info(Offset, "f")
+            if not Function then return end
+            if Getfenv(Function) ~= AlphaENV then
+                return Function
+            end
         end
     end
+end
+
 
 function Process:Decompile(Script: LocalScript | ModuleScript): string
     local KonstantAPI = "http://api.plusgiant5.com/konstant/decompile"
