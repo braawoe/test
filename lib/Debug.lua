@@ -279,10 +279,9 @@ function Debug:DumpRemoteInfo(Remote): table
         Methods = {}
     }
     
-    --// Get attributes
-    for _, Attr in Remote:GetAttributes() do
-        Info.Attributes[Attr] = Remote:GetAttribute(Attr)
-    end
+    for AttrName, AttrValue in pairs(Remote:GetAttributes()) do
+		info.Attributes[AttrName] = AttrValue
+	end
     
     --// Get class data
     local ClassData = Process.RemoteClassData[Remote.ClassName]
