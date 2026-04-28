@@ -147,7 +147,7 @@ function Module:WaitCheck()
     Tick += 1
     if Tick > 40 then
         Tick = 0
-        wait()
+        task.wait()
     end
 end
 
