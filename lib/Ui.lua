@@ -206,12 +206,10 @@ function Ui:CreateMainWindow()
     })
     
     self.Window = Window
-    
-    --// Check font
+
     self:FontWasSuccessful()
     
-    --// UiVisible flag callback
-    Flags:SetFlagCallback("UiVisible", function(self, Visible)
+    Flags:SetFlagCallback("UiVisible", function(Visible)
         Window:SetVisible(Visible)
     end)
     
