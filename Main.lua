@@ -8,7 +8,7 @@ local Configuration = {
     NoActors = false,
     FolderName = "Alpha Spy",
     RepoUrl = "https://raw.githubusercontent.com/trident-bit/test/main",
-    ParserUrl = "https://raw.githubusercontent.com/Jsssiee/Roblox-parser/refs/heads/main/dist/Main.luau",
+    ParserUrl = "",
     Directory = "Alpha Spy",
     DebugMode = false,
 }
