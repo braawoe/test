@@ -137,10 +137,12 @@ function Files:CheckFolders(Structure: table, Path: string?)
             local NewPath = self:CheckPath(Path, ParentName)
             self:FolderCheck(NewPath)
             self:CheckFolders(Name, NewPath)
-		else
+		            else
             local FolderPath = self:CheckPath(Path, Name)
             self:FolderCheck(FolderPath)
         end
+    end
+end
 
 function Files:TemplateCheck(Path: string, TemplateName: string)
     self:FileCheck(Path, function()
