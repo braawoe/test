@@ -272,7 +272,7 @@ function Module:CreateChannel(): (number, BindableEvent)
         if success then return id, event end
     end
 
-    local Parent = self.GetHiddinParent()
+    local Parent = self:GetHiddenParent()
     local ChannelId = math.random(1, 10000000)
 
     local Channel = Instance.new("BindableEvent", Parent)

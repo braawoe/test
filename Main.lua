@@ -13,11 +13,30 @@ local Configuration = {
     DebugMode = false,
 }
 
+-- SECURITY: Validate configuration keys
+local ALLOWED_CONFIG_KEYS = {
+    "UseWorkspace", "NoActors", "FolderName", "RepoUrl", "ParserUrl",
+    "Directory", "DebugMode", "LogLimit", "Theme"
+}
+
+local function ValidateConfig(Key, Value)
+    for _, AllowedKey in ipairs(ALLOWED_CONFIG_KEYS) do
+        if Key == AllowedKey then
+            return true
+        end
+    end
+    return false
+end
+
 local Parameters = {...}
 local Overwrites = Parameters[1]
 if typeof(Overwrites) == "table" then
     for Key, Value in Overwrites do
-        Configuration[Key] = Value
+        if ValidateConfig(Key, Value) then
+            Configuration[Key] = Value
+        else
+            warn(`[Security] Blocked unauthorized config key: {Key}`)
+        end
     end
 end
 

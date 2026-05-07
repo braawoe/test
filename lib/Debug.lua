@@ -293,6 +293,10 @@ function Debug:DumpRemoteInfo(Remote): table
 end
 
 function Debug:GetStats(): table
+    if not Process then
+        warn("[Debug] Process module not initialized; returning shallow copy of stats")
+        return self.Stats
+    end
     return Process:DeepCloneTable(self.Stats)
 end
 
