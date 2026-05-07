@@ -264,17 +264,21 @@ function Module:AddTypeCallbacks(Types: table)
     end
 end
 
-function Module:CreateChannel(): number
-    local ChannelID, Event = self:CreateCommChannel()
-    
-    Event.Event:Connect(function(Type: string, ...)
-        local Callback = self:GetCommCallback(Type)
-        if Callback then
-            Callback(...)
-        end
-    end)
-    
-    return ChannelID, Event
+function Module:CreateChannel(): (number, BindableEvent)
+    local Force = Config.ForceUseCustomComm
+
+    if type(create_comm_channel) == " function" and not Force then
+        local success, id, event = pcall(create_comm_channel)
+        if success then return id, event end
+    end
+
+    local Parent = self.GetHiddinParent()
+    local ChannelId = math.random(1, 10000000)
+
+    local Channel = Instance.new("BindableEvent", Parent)
+    Channel.Name = tostring(ChannelId)
+
+    return ChannelId, Channel
 end
 
 Module:MakeDebugIdHandler()
