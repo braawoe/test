@@ -65,11 +65,24 @@ local Hook
 local ParserModule
 local Flags
 
-local function Merge(Base: table, New: table?)
-    if not New then return end
-    for Key, Value in next, New do
-        Base[Key] = Value
+local function Compile(Template: table): string
+    local Out = ""
+
+    for _, Value in ipairs(Template) do
+        local Content, Indent = Value[1], Value[2] or 0
+        Indent = math.clamp(Indent - 1, 0, 9999)
+        local Line = Generation:ApplyVariables(Content, Variables, Indent)
+        Out ..= `{Generation:MakeIndent(Indent)}{Line}\n`
     end
+
+    for Key, Value in next, Template do
+        if typeof(Key) == "string" and table.find(MetaMethods, Key) then
+            if Key == MetaMethod then
+                Out ..= Compile(Value)
+            end
+        end
+    end
+    return Out
 end
 
 function Generation:Init(Data: table)

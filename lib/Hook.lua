@@ -215,7 +215,7 @@ function Hook:IndexHook(Object, Property)
             local proxy = newproxy(true)
             local mt = getmetatable(proxy)
             mt.__index = function(_, Index)
-                if Index == "Connect" or Index "connect" then
+                if Index == "Connect" or Index == "connect" then
                     return function(_, Callback)
                         return Original:Connect(function(...)
                             local Data = {
@@ -259,8 +259,7 @@ function Hook:LoadHooks(ActorCode: string, ChannelId: number)
 end
 
 
-function Hook:BeginService(Libraries, ExtraData, Args)
-    local ChannelId = Args[1]
+function Hook:BeginService(Libraries, ExtraData, ChannelId)
     
     Modules = Libraries
     Process = Libraries.Process
@@ -272,7 +271,6 @@ function Hook:BeginService(Libraries, ExtraData, Args)
     end
     
     self:BeginHooks()
-    
     print("[Alpha Spy] Actor hooks started on channel", ChannelId)
 end
 

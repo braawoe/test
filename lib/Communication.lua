@@ -45,9 +45,8 @@ end
 
 function CommWrapper:ProcessQueue()
     local Queue = self.Queue
-    
-    for Index = 1, #Queue do
-        local Arguments = table.remove(Queue)
+    while #Queue > 0 do
+        local Arguments = table.remove(Queue, 1)
         pcall(function()
             self:ProcessArguments(Arguments)
         end)
@@ -95,22 +94,6 @@ end
 function Module:GetHiddenParent(): Instance
     if gethui then return gethui() end
     return CoreGui
-end
-
-function Module:CreateCommChannel(): (number, BindableEvent)
-    local Force = Config.ForceUseCustomComm
-    
-    if type(create_comm_channel) == "function" and not Force then
-     local success, result = pcall(create_comm_channel)
-     if success then return result end
-    end
-    
-    local Parent = self:GetHiddenParent()
-    local ChannelId = math.random(1, 10000000)
-    local Channel = Instance.new("BindableEvent", Parent)
-    Channel.Name = tostring(ChannelId)
-    
-    return ChannelId, Channel
 end
 
 function Module:GetCommChannel(ChannelId: number): (BindableEvent?, boolean)

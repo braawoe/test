@@ -5,7 +5,7 @@ type table = {
 --// Module
 local Files = {
     UseWorkspace = false,
-    Folder = "Alpha Spy",
+    FolderName = "Alpha Spy",
     RepoUrl = nil,
     FolderStructure = {
         ["Alpha Spy"] = {
@@ -65,8 +65,7 @@ function Files:UrlFetch(Url: string): string
 end
 
 function Files:MakePath(Path: string)
-    local Folder = self.Folder
-    return `{Folder}/{Path}`
+    return `{self.FolderName}/{Path}`
 end
 
 function Files:LoadCustomAsset(Path: string): string?
@@ -255,7 +254,7 @@ function Files:MakeActorScript(Scripts, ChannelId: number): string
         }
     ]]
     
-    ActorCode ..= `Libraries.Hook:BeginService(Libraries, ExtraData, {ChannelId})`
+    ActorCode ..= `Libraries.Hook:BeginService(Libraries, ExtraData, 5432109)`
     
     return ActorCode
 end
