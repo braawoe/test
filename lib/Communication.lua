@@ -201,7 +201,7 @@ function Module:DeserializeTable(Serialized: table): table
     return Table
 end
 
-function Module:SetChannel(NewChannel: number)
+function Module:SetChannel(NewChannel: BindableEvent)
     Channel = NewChannel
 end
 
@@ -232,6 +232,7 @@ function Module:ChannelIndex(Channel, Property: string)
         return Hook:Index(Channel, Property)
     end
     
+    if Channel == nil then return nil end
     return Channel[Property]
 end
 
@@ -267,7 +268,7 @@ end
 function Module:CreateChannel(): (number, BindableEvent)
     local Force = Config.ForceUseCustomComm
 
-    if type(create_comm_channel) == " function" and not Force then
+    if type(create_comm_channel) == "function" and not Force then
         local success, id, event = pcall(create_comm_channel)
         if success then return id, event end
     end
