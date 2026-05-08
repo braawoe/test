@@ -255,13 +255,13 @@ function Debug:GenerateBypassScript(Remote, Method, Pattern): string
         Script ..= `-- Spoof pattern\n`
         Script ..= `local Old; Old = hookfunction(Remote.{Method}, function(...)\n`
         Script ..= `    print("[Spoofed]", ...)`
-        Script ..= `    return "Spoofed Return Value"\n`
+        Script ..= `    return "Spoofed Return Value" \n`
         Script ..= `end)\n`
     elseif Pattern == "log" then
         Script ..= `-- Log pattern\n`
         Script ..= `local Old; Old = hookfunction(Remote.{Method}, function(...)\n`
         Script ..= `    print("[Logged]", ...)`
-        Script ..= `    return Old(...)\n`
+        Script ..= `    return Old(...)\n 
         Script ..= `end)\n`
     end
     
@@ -295,7 +295,10 @@ end
 function Debug:GetStats(): table
     if not Process then
         warn("[Debug] Process module not initialized; returning shallow copy of stats")
-        return self.Stats
+        return self.Stats or {}
+    end
+    if not self.Stats then
+       self:ResetStats()
     end
     return Process:DeepCloneTable(self.Stats)
 end
