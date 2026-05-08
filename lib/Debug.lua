@@ -255,7 +255,7 @@ function Debug:GenerateBypassScript(Remote, Method, Pattern): string
         Script ..= `-- Spoof pattern\n`
         Script ..= `local Old; Old = hookfunction(Remote.{Method}, function(...)\n`
         Script ..= `    print("[Spoofed]", ...)`
-        Script ..= `    return "Spoofed Return Value" \n`
+        Script ..= `    return "Spoofed Return Value"\n`
         Script ..= `end)\n`
     elseif Pattern == "log" then
         Script ..= `-- Log pattern\n`
