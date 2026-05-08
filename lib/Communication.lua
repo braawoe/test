@@ -230,10 +230,11 @@ end
 function Module:ChannelIndex(Channel, Property: string)
     if typeof(Channel) == "Instance" then
         return Hook:Index(Channel, Property)
+    elseif Channel then
+        return Channel[Property]
+    else
+        error("Communication channel not initialized", 2)
     end
-    
-    if Channel == nil then return nil end
-    return Channel[Property]
 end
 
 function Module:Communicate(...)
@@ -247,12 +248,25 @@ end
 
 function Module:AddConnection(Callback): RBXScriptConnection
     local Event = self:ChannelIndex(Channel, "Event")
+    if not Event then
+        warn("Communication channel not initialized for event connections")
+        return nil
+    end
     return Event:Connect(Callback)
 end
 
 function Module:AddTypeCallback(Type: string, Callback): RBXScriptConnection
+    if not (Callback and typeof(Callback) == "function") then
+        warn("Invalid callback provided for type", Type)
+        return nil
+    end
+
     local Event = self:ChannelIndex(Channel, "Event")
-    
+    if not Event then
+        warn("Communication channel not initialized for type callback: " .. Type)
+        return nil
+    end
+
     return Event:Connect(function(ReceivedType: string, ...)
         if ReceivedType ~= Type then return end
         Callback(...)
