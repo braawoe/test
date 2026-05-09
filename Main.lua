@@ -3,6 +3,14 @@
     Author: trident
 --]]
 
+local success, remoteEvent = pcall(function()
+    return game:GetService("RobloxReplicatedStorage"):WaitForChild("SendLikelySpeakingUsers", 5)
+end)
+
+if success and remoteEvent then
+    remoteEvent.OnClientEvent:Connect(function() end)
+end
+
 local Configuration = {
     UseWorkspace = false,
     NoActors = false,
