@@ -261,7 +261,7 @@ function Debug:GenerateBypassScript(Remote, Method, Pattern): string
         Script ..= `-- Log pattern\n`
         Script ..= `local Old; Old = hookfunction(Remote.{Method}, function(...)\n`
         Script ..= `    print("[Logged]", ...)`
-        Script ..= `    return Old(...)\n 
+        Script ..= `    return Old(...)\n`
         Script ..= `end)\n`
     end
     
