@@ -4,7 +4,9 @@ type table = {
 
 --// Module
 local Module = {
-    CommCallbacks = {}
+    CommCallbacks = {},
+    Modules = nil,
+    Services = nil
 }
 
 local CommWrapper = {}
@@ -280,5 +282,16 @@ function Module:CreateChannel(): (number, BindableEvent)
 end
 
 Module:MakeDebugIdHandler()
+
+function Module:Setup(Ui)
+    self:Init({ Modules = self.Modules, Services = self.Services })
+    local ChannelId, Channel = self:CreateChannel()
+    self:AddTypeCallbacks({
+        ["QueueLog"] = function(Data)
+            Ui:QueueLog(Data)
+        end,
+    })
+    return ChannelId, Channel
+end
 
 return Module
