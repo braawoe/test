@@ -48,8 +48,6 @@ function Module:GetHiddenParent()
 end
 
 function Module:Setup(Ui)
-    self:Init({ Modules = self.Modules, Services = self.Services })
-    
     local ChannelId, Channel = self:CreateChannel()
     if not Channel then
         warn("Failed to create communication channel")
