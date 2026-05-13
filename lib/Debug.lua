@@ -113,6 +113,12 @@ end
 function Debug:LogCall(Data)
     if not Flags:GetFlagValue("DebugLogStack") then return end
     
+    -- Check if Process is initialized before using it
+    if not Process or not Process.IsInitialized then
+        -- Don't spam warnings
+        return {}
+    end
+    
     local CallData = {
         Remote = Data.Remote,
         Method = Data.Method,
@@ -269,6 +275,11 @@ function Debug:GenerateBypassScript(Remote, Method, Pattern): string
 end
 
 function Debug:DumpRemoteInfo(Remote): table
+    if not Process or not Process.IsInitialized then
+        -- Don't spam warnings
+        return {}
+    end
+    
     local Info = {
         Name = Remote.Name,
         ClassName = Remote.ClassName,
@@ -293,9 +304,9 @@ function Debug:DumpRemoteInfo(Remote): table
 end
 
 function Debug:GetStats(): table
-    if not Process then
-        warn("[Debug] Process module not initialized; returning shallow copy of stats")
-        return self.Stats or {}
+    if not Process or not Process.IsInitialized then
+        -- Don't spam warnings
+        return {}
     end
     if not self.Stats then
        self:ResetStats()
