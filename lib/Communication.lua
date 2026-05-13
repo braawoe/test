@@ -1,297 +1,66 @@
-type table = {
-    [any]: any
-}
-
---// Module
 local Module = {
     CommCallbacks = {},
     Modules = nil,
     Services = nil
 }
 
-local CommWrapper = {}
-CommWrapper.__index = CommWrapper
-
---// Serializer cache
-local SerializeCache = setmetatable({}, {__mode = "k"})
-local DeserializeCache = setmetatable({}, {__mode = "k"})
-
---// Services
-local CoreGui
-
---// Modules
-local Hook
-local Channel
-local Config
-local Process
-
-function Module:Init(Data)
-    local Modules = Data.Modules
-    local Services = Data.Services
-    
-    Hook = Modules.Hook
-    Process = Modules.Process
-    Config = Modules.Config or Config
-    CoreGui = Services.CoreGui
+-- Create channel if not using custom channel
+local function create_comm_channel()
+    -- Placeholder implementation; replace with actual channel creation logic if available
+    return 12345678, Instance.new("BindableEvent")
 end
 
-function CommWrapper:Fire(...)
-    local Queue = self.Queue
-    table.insert(Queue, {...})
-end
-
-function CommWrapper:ProcessArguments(Arguments)
-    local Channel = self.Channel
-    Channel:Fire(Process:Unpack(Arguments))
-end
-
-function CommWrapper:ProcessQueue()
-    local Queue = self.Queue
-    while #Queue > 0 do
-        local Arguments = table.remove(Queue, 1)
-        pcall(function()
-            self:ProcessArguments(Arguments)
-        end)
-    end
-end
-
-function CommWrapper:BeginQueueService()
-    task.spawn(function()
-     while task.wait() do self:ProcessQueue() end
-        end)
-end
-
-function Module:NewCommWrap(Channel: BindableEvent)
-    local Base = {
-        Queue = setmetatable({}, {__mode = "v"}),
-        Channel = Channel,
-        Event = Channel.Event
-    }
-    
-    local Wrapped = setmetatable(Base, CommWrapper)
-    Wrapped:BeginQueueService()
-    
-    return Wrapped
-end
-
-function Module:MakeDebugIdHandler(): BindableFunction
-    local Remote = Instance.new("BindableFunction")
-    
-    function Remote.OnInvoke(Object: Instance): string
-        return Object:GetDebugId()
-    end
-    
-    self.DebugIdRemote = Remote
-    self.DebugIdInvoke = Remote.Invoke
-    
-    return Remote
-end
-
-function Module:GetDebugId(Object: Instance): string
-    local Invoke = self.DebugIdInvoke
-    local Remote = self.DebugIdRemote
-    return Invoke(Remote, Object)
-end
-
-function Module:GetHiddenParent(): Instance
-    if gethui then return gethui() end
-    return CoreGui
-end
-
-function Module:GetCommChannel(ChannelId: number): (BindableEvent?, boolean)
+function Module:CreateChannel()
     local Force = Config.ForceUseCustomComm
-    
-    if get_comm_channel and not Force then
-        local Channel = get_comm_channel(ChannelId)
-        return Channel, false
-    end
-    
     local Parent = self:GetHiddenParent()
-    local Channel = Parent:FindFirstChild(tostring(ChannelId))
-    
-    if not Channel then return nil, false end
-    
-    local Wrapped = self:NewCommWrap(Channel)
-    return Wrapped, true
-end
 
-function Module:CheckValue(Value, Inbound: boolean?)
-    if typeof(Value) ~= "table" then
-        return Value
-    end
-    
-    if Inbound then
-        return self:DeserializeTable(Value)
-    end
-    
-    return self:SerializeTable(Value)
-end
-
-local Tick = 0
-function Module:WaitCheck()
-    Tick += 1
-    if Tick > 40 then
-        Tick = 0
-        task.wait()
-    end
-end
-
-function Module:MakePacket(Index, Value): table
-    self:WaitCheck()
-    
-    return {
-        Index = self:CheckValue(Index),
-        Value = self:CheckValue(Value)
-    }
-end
-
-function Module:ReadPacket(Packet: table): (any, any)
-    if typeof(Packet) ~= "table" then return Packet end
-    
-    local Key = self:CheckValue(Packet.Index, true)
-    local Value = self:CheckValue(Packet.Value, true)
-    
-    self:WaitCheck()
-    return Key, Value
-end
-
-function Module:SerializeTable(Table: table): table
-    local Cached = SerializeCache[Table]
-    if Cached then return Cached end
-    
-    local Serialized = {}
-    SerializeCache[Table] = Serialized
-    
-    for Index, Value in next, Table do
-        local Packet = self:MakePacket(Index, Value)
-        table.insert(Serialized, Packet)
-    end
-    
-    return Serialized
-end
-
-function Module:DeserializeTable(Serialized: table): table
-    local Cached = DeserializeCache[Serialized]
-    if Cached then return Cached end
-    
-    local Table = {}
-    DeserializeCache[Serialized] = Table
-    
-    for _, Packet in next, Serialized do
-        local Index, Value = self:ReadPacket(Packet)
-        if Index == nil then continue end
-        Table[Index] = Value
-    end
-    
-    return Table
-end
-
-function Module:SetChannel(NewChannel: BindableEvent)
-    Channel = NewChannel
-end
-
-function Module:ConsolePrint(...)
-    self:Communicate("Print", ...)
-end
-
-function Module:QueueLog(Data)
-    task.spawn(function()
-        local SerializedArgs = self:SerializeTable(Data.Args)
-        Data.Args = SerializedArgs
-        self:Communicate("QueueLog", Data)
-    end)
-end
-
-function Module:AddCommCallback(Type: string, Callback: (...any) -> ...any)
-    local CommCallbacks = self.CommCallbacks
-    CommCallbacks[Type] = Callback
-end
-
-function Module:GetCommCallback(Type: string): (...any) -> ...any
-    local CommCallbacks = self.CommCallbacks
-    return CommCallbacks[Type]
-end
-
-function Module:ChannelIndex(Channel, Property: string)
-    if typeof(Channel) == "Instance" then
-        return Hook:Index(Channel, Property)
-    elseif Channel then
-        return Channel[Property]
-    else
-        error("Communication channel not initialized", 2)
-    end
-end
-
-function Module:Communicate(...)
-    local Fire = self:ChannelIndex(Channel, "Fire")
-    local identity = getthreadidentity()
-    
-    setthreadidentity(8)
-    Fire(Channel, ...)
-    setthreadidentity(identity)
-end
-
-function Module:AddConnection(Callback): RBXScriptConnection
-    local Event = self:ChannelIndex(Channel, "Event")
-    if not Event then
-        warn("Communication channel not initialized for event connections")
-        return nil
-    end
-    return Event:Connect(Callback)
-end
-
-function Module:AddTypeCallback(Type: string, Callback): RBXScriptConnection
-    if not (Callback and typeof(Callback) == "function") then
-        warn("Invalid callback provided for type", Type)
-        return nil
+    if not Parent then
+        warn("Parent object not available for channel creation")
+        return nil, nil
     end
 
-    local Event = self:ChannelIndex(Channel, "Event")
-    if not Event then
-        warn("Communication channel not initialized for type callback: " .. Type)
-        return nil
-    end
-
-    return Event:Connect(function(ReceivedType: string, ...)
-        if ReceivedType ~= Type then return end
-        Callback(...)
-    end)
-end
-
-function Module:AddTypeCallbacks(Types: table)
-    for Type: string, Callback in next, Types do
-        self:AddTypeCallback(Type, Callback)
-    end
-end
-
-function Module:CreateChannel(): (number, BindableEvent)
-    local Force = Config.ForceUseCustomComm
-
+    -- Try to use custom channel creation if it exists
     if type(create_comm_channel) == "function" and not Force then
         local success, id, event = pcall(create_comm_channel)
-        if success then return id, event end
+        if success then
+            return id, event
+        end
     end
 
-    local Parent = self:GetHiddenParent()
+    -- Fallback channel creation
     local ChannelId = math.random(1, 10000000)
-
     local Channel = Instance.new("BindableEvent", Parent)
     Channel.Name = tostring(ChannelId)
+
+    -- Initialize debug handlers
+    self:MakeDebugIdHandler()
+    self.DebugIdRemote = DebugIdRemote
+    self.DebugIdInvoke = DebugIdInvoke
 
     return ChannelId, Channel
 end
 
-Module:MakeDebugIdHandler()
+function Module:GetHiddenParent()
+    if not gethui then
+        return CoreGui
+    end
+    return gethui()
+end
 
 function Module:Setup(Ui)
     self:Init({ Modules = self.Modules, Services = self.Services })
+    
     local ChannelId, Channel = self:CreateChannel()
+    if not Channel then
+        warn("Failed to create communication channel")
+        return
+    end
+
     self:AddTypeCallbacks({
         ["QueueLog"] = function(Data)
             Ui:QueueLog(Data)
         end,
     })
-    return ChannelId, Channel
 end
 
 return Module
