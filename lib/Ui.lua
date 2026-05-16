@@ -1,3 +1,7 @@
+-- Alpha Spy GUI
+-- Font: Enum.Font.Code (Courier New equivalent)
+-- Created by trident (+99999 AURA)
+
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
@@ -380,32 +384,35 @@ local StatusBar = make("Frame", {
     Position         = UDim2.new(0, 0, 1, -16),
     BackgroundColor3 = C.TitleBar,
     BorderSizePixel  = 0,
+    ClipsDescendants = true,
     ZIndex           = 2,
 }, Main)
 
--- Left label
+-- Left label — anchored left, fixed offset from edge
 make("TextLabel", {
     Text           = "-- welcome to alpha spy",
     Font           = Enum.Font.Code,
     TextSize       = 10,
-    TextColor3     = Color3.fromRGB(136,136,136),
+    TextColor3     = Color3.fromRGB(136, 136, 136),
     BackgroundTransparency = 1,
-    Size           = UDim2.new(0.5, -8, 1, 0),
-    Position       = UDim2.new(0, 8, 0, 0),
+    AnchorPoint    = Vector2.new(0, 0.5),
+    Size           = UDim2.new(0, 160, 1, 0),
+    Position       = UDim2.new(0, 8, 0.5, 0),
     TextXAlignment = Enum.TextXAlignment.Left,
     TextTruncate   = Enum.TextTruncate.AtEnd,
     ZIndex         = 2,
 }, StatusBar)
 
--- Right label
+-- Right label — anchored right, fixed offset from edge
 make("TextLabel", {
     Text           = "-- made by trident",
     Font           = Enum.Font.Code,
     TextSize       = 10,
-    TextColor3     = Color3.fromRGB(136,136,136),
+    TextColor3     = Color3.fromRGB(136, 136, 136),
     BackgroundTransparency = 1,
-    Size           = UDim2.new(0.5, -8, 1, 0),
-    Position       = UDim2.new(0.5, 0, 0, 0),
+    AnchorPoint    = Vector2.new(1, 0.5),
+    Size           = UDim2.new(0, 150, 1, 0),
+    Position       = UDim2.new(1, -8, 0.5, 0),
     TextXAlignment = Enum.TextXAlignment.Right,
     TextTruncate   = Enum.TextTruncate.AtEnd,
     ZIndex         = 2,
